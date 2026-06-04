@@ -1,7 +1,7 @@
-package com.nhnacademy.minidooray.task.dto;
+package com.nhnacademy.frontgateway.task.dto;
 
-import com.nhnacademy.minidooray.milestone.dto.MilestoneResponse;
-import com.nhnacademy.minidooray.tag.dto.TagResponse;
+import com.nhnacademy.frontgateway.milestone.dto.MilestoneResponse;
+import com.nhnacademy.frontgateway.tag.dto.TagResponse;
 
 import java.util.List;
 

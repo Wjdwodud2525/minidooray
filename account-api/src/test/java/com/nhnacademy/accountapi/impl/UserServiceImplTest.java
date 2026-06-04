@@ -1,15 +1,16 @@
-package com.nhnacademy.account.service.impl;
+package com.nhnacademy.accountapi.impl;
 
-import com.nhnacademy.account.dto.auth.LoginResponse;
-import com.nhnacademy.account.dto.user.UserCreateRequest;
-import com.nhnacademy.account.dto.user.UserResponse;
-import com.nhnacademy.account.dto.user.UserUpdateRequest;
-import com.nhnacademy.account.entity.User;
-import com.nhnacademy.account.entity.UserStatus;
-import com.nhnacademy.account.exception.LoginFailedException;
-import com.nhnacademy.account.exception.UserAlreadyExistsException;
-import com.nhnacademy.account.exception.UserNotFoundException;
-import com.nhnacademy.account.repository.UserRepository;
+import com.nhnacademy.accountapi.dto.auth.LoginResponse;
+import com.nhnacademy.accountapi.dto.user.UserCreateRequest;
+import com.nhnacademy.accountapi.dto.user.UserResponse;
+import com.nhnacademy.accountapi.dto.user.UserUpdateRequest;
+import com.nhnacademy.accountapi.entity.User;
+import com.nhnacademy.accountapi.entity.UserStatus;
+import com.nhnacademy.accountapi.exception.LoginFailedException;
+import com.nhnacademy.accountapi.exception.UserAlreadyExistsException;
+import com.nhnacademy.accountapi.exception.UserNotFoundException;
+import com.nhnacademy.accountapi.repository.UserRepository;
+import com.nhnacademy.accountapi.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,15 +21,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,7 +54,7 @@ class UserServiceImplTest {
                 "1234"
         );
 
-        when(userRepository.existsByUserIdAndStatus(anyString(), eq(UserStatus.ACTIVE))).thenReturn(false);
+        when(userRepository.existsByIdAndStatus(anyString(), eq(UserStatus.ACTIVE))).thenReturn(false);
         when(passwordEncoder.encode(anyString())).thenReturn("encoded");
 
         UserResponse response = userService.registerUser(request);
@@ -64,7 +62,7 @@ class UserServiceImplTest {
         verify(userRepository).save(userCaptor.capture());
         User result = userCaptor.getValue();
 
-        verify(userRepository,times(1)).existsByUserIdAndStatus(anyString(), eq(UserStatus.ACTIVE));
+        verify(userRepository,times(1)).existsByIdAndStatus(anyString(), eq(UserStatus.ACTIVE));
 
         assertAll(
                 () -> assertEquals("testId", response.userId()),
@@ -86,7 +84,7 @@ class UserServiceImplTest {
                 "1234"
         );
 
-        when(userRepository.existsByUserIdAndStatus(anyString(), eq(UserStatus.ACTIVE))).thenReturn(true);
+        when(userRepository.existsByIdAndStatus(anyString(), eq(UserStatus.ACTIVE))).thenReturn(true);
 
         assertThrows(UserAlreadyExistsException.class, () -> userService.registerUser(request));
         verify(userRepository, never()).save(any(User.class));
@@ -106,7 +104,7 @@ class UserServiceImplTest {
 
         when(userRepository.findAllByStatus(eq(UserStatus.ACTIVE))).thenReturn(List.of(user));
 
-        List<UserResponse> userResponses = userService.getAllUser();
+        List<UserResponse> userResponses = userService.getUsers();
 
         verify(userRepository, times(1)).findAllByStatus(eq(UserStatus.ACTIVE));
         assertAll(
@@ -129,13 +127,13 @@ class UserServiceImplTest {
                 ZonedDateTime.now(),
                 UserStatus.ACTIVE
         );
-        when(userRepository.findByUserIdAndStatus(anyString(), eq(UserStatus.ACTIVE))).thenReturn(Optional.of(user));
+        when(userRepository.findByIdAndStatus(anyString(), eq(UserStatus.ACTIVE))).thenReturn(Optional.of(user));
 
 
-        UserResponse response = userService.getUser(user.getUserId());
+        UserResponse response = userService.getUserById(user.getUserId());
 
 
-        verify(userRepository, times(1)).findByUserIdAndStatus(anyString(), eq(UserStatus.ACTIVE));
+        verify(userRepository, times(1)).findByIdAndStatus(anyString(), eq(UserStatus.ACTIVE));
         assertAll(
                 () -> assertEquals(user.getEmail(), response.email()),
                 () -> assertEquals(user.getStatus(),response.status()),
@@ -147,9 +145,9 @@ class UserServiceImplTest {
     @Test
     @DisplayName("단일 유저 조회 실패 테스트 - 활성 유저 없음")
     void getUserFailTest(){
-        when(userRepository.findByUserIdAndStatus(anyString(), eq(UserStatus.ACTIVE))).thenReturn(Optional.empty());
+        when(userRepository.findByIdAndStatus(anyString(), eq(UserStatus.ACTIVE))).thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () -> userService.getUser("missing-user"));
+        assertThrows(UserNotFoundException.class, () -> userService.getUserById("missing-user"));
     }
 
     @Test
@@ -177,10 +175,10 @@ class UserServiceImplTest {
                 UserStatus.ACTIVE
         );
 
-        when(userRepository.existsByUserIdAndStatus(anyString(), eq(UserStatus.ACTIVE))).thenReturn(true);
+        when(userRepository.existsByIdAndStatus(anyString(), eq(UserStatus.ACTIVE))).thenReturn(true);
         when(passwordEncoder.encode(anyString())).thenReturn("encoded");
         when(userRepository.updateUserByUserId(anyString(), anyString(), anyString())).thenReturn(1);
-        when(userRepository.findByUserIdAndStatus(anyString(), eq(UserStatus.ACTIVE))).thenReturn(Optional.of(updatedUser));
+        when(userRepository.findByIdAndStatus(anyString(), eq(UserStatus.ACTIVE))).thenReturn(Optional.of(updatedUser));
 
         UserResponse response = userService.updateUser(user.getUserId(), request);
 
@@ -196,7 +194,7 @@ class UserServiceImplTest {
     @Test
     @DisplayName("유저 탈퇴(비활성화)테스트")
     void deleteUserTest(){
-        when(userRepository.existsByUserIdAndStatus(anyString(), eq(UserStatus.ACTIVE))).thenReturn(true);
+        when(userRepository.existsByIdAndStatus(anyString(), eq(UserStatus.ACTIVE))).thenReturn(true);
         when(userRepository.updateStatusByUserId(anyString(), eq(UserStatus.DELETED))).thenReturn(1);
 
         userService.deleteUser("test");
@@ -216,11 +214,11 @@ class UserServiceImplTest {
                 UserStatus.ACTIVE
         );
 
-        when(userRepository.findByUserIdAndStatus(anyString(), eq(UserStatus.ACTIVE))).thenReturn(Optional.of(user));
+        when(userRepository.findByIdAndStatus(anyString(), eq(UserStatus.ACTIVE))).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("1234", "encoded-password")).thenReturn(true);
         when(userRepository.updateLastLoginAtByUserId(anyString(), any(ZonedDateTime.class))).thenReturn(1);
 
-        LoginResponse response = userService.login("test", "1234");
+        LoginResponse response = userService.loginUser("test", "1234");
 
         verify(userRepository, times(1)).updateLastLoginAtByUserId(eq("test"), any(ZonedDateTime.class));
         assertAll(
@@ -241,10 +239,10 @@ class UserServiceImplTest {
                 UserStatus.ACTIVE
         );
 
-        when(userRepository.findByUserIdAndStatus(anyString(), eq(UserStatus.ACTIVE))).thenReturn(Optional.of(user));
+        when(userRepository.findByIdAndStatus(anyString(), eq(UserStatus.ACTIVE))).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("wrong-password", "encoded-password")).thenReturn(false);
 
-        assertThrows(LoginFailedException.class, () -> userService.login("test", "wrong-password"));
+        assertThrows(LoginFailedException.class, () -> userService.loginUser("test", "wrong-password"));
         verify(userRepository, never()).updateLastLoginAtByUserId(anyString(), any(ZonedDateTime.class));
     }
 }

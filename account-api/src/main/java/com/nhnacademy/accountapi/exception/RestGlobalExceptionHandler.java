@@ -1,4 +1,4 @@
-package com.nhnacademy.account.exception;
+package com.nhnacademy.accountapi.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

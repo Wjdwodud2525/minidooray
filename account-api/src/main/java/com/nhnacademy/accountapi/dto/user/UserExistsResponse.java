@@ -1,4 +1,4 @@
-package com.nhnacademy.account.dto.user;
+package com.nhnacademy.accountapi.dto.user;
 
 import lombok.Builder;
 

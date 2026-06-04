@@ -1,10 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${task.title}">태스크 상세</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-$END$
+<main>
+    <header>
+        <div>
+            <h1 th:text="${task.title}">태스크</h1>
+            <p>ID <span th:text="${task.taskId}">1</span></p>
+        </div>
+        <nav>
+            <a th:href="@{/projects/{projectId}/tasks(projectId=${projectId})}">태스크 목록</a>
+            <a th:href="@{/projects/{projectId}/tasks/{taskId}/comments(projectId=${projectId}, taskId=${task.taskId})}">댓글</a>
+        </nav>
+    </header>
+
+    <section class="panel">
+        <h2>내용</h2>
+        <p th:text="${task.content}">내용</p>
+        <p>마일스톤: <span th:text="${task.milestone != null ? task.milestone.name : '-'}">-</span></p>
+        <p>
+            태그:
+            <span th:if="${#lists.isEmpty(task.tags)}">-</span>
+            <span th:each="tag, stat : ${task.tags}" th:text="${tag.name + (stat.last ? '' : ', ')}">tag</span>
+        </p>
+    </section>
+
+    <section class="panel">
+        <h2>수정</h2>
+        <form method="post" th:action="@{/projects/{projectId}/tasks/{taskId}(projectId=${projectId}, taskId=${task.taskId})}">
+            <input name="title" type="text" th:value="${task.title}" required>
+            <textarea name="content" th:text="${task.content}" required></textarea>
+            <input name="milestoneId" type="number" placeholder="마일스톤 ID" th:value="${task.milestone != null ? task.milestone.milestoneId : ''}">
+            <input name="tagIds" type="text" placeholder="태그 ID 목록 예: 1,2">
+            <button type="submit">수정</button>
+        </form>
+        <form method="post" th:action="@{/projects/{projectId}/tasks/{taskId}(projectId=${projectId}, taskId=${task.taskId})}">
+            <input type="hidden" name="_method" value="delete">
+            <button class="danger" type="submit">삭제</button>
+        </form>
+    </section>
+</main>
 </body>
 </html>

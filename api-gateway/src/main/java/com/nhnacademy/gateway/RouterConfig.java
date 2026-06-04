@@ -16,6 +16,7 @@ public class RouterConfig {
                                 .uri("lb://task-api"))
                 .route("account-api",
                         p -> p.path("/api/account/**", "/api/accounts/**")
+                                .filters(f -> f.stripPrefix(2))
                                 .uri("lb://account-api"))
                 .build();
     }

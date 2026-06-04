@@ -21,7 +21,7 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    // 프로젝트 내 모든 테스크 조회
+    // 프로젝트 내 모든 태스크 조회
     @GetMapping
     public ResponseEntity<List<TaskSummaryResponse>> getTasksByProject(
             @PathVariable("projectId") Long projectId,
@@ -32,7 +32,7 @@ public class TaskController {
         return ResponseEntity.ok(resp);
     }
 
-    // 테스크 생성
+    // 태스크 생성
     @PostMapping
     public ResponseEntity<TaskDetailResponse> createTask(
             @PathVariable("projectId") Long projectId,
@@ -44,7 +44,7 @@ public class TaskController {
         return ResponseEntity.ok(resp);
     }
 
-    // 테스크 단건 조회
+    // 태스크 단건 조회
     @GetMapping("/{taskId}")
     public ResponseEntity<TaskDetailResponse> getTask(
             @PathVariable("projectId") Long projectId,
@@ -56,7 +56,7 @@ public class TaskController {
         return ResponseEntity.ok(resp);
     }
 
-    // 테스크 수정
+    // 태스크 수정
     @PostMapping("/{taskId}")
     public ResponseEntity<TaskDetailResponse> updateTask(
             @PathVariable("projectId") Long projectId,
@@ -64,12 +64,12 @@ public class TaskController {
             @RequestHeader("X-User-Id") String userId,
             @Valid @RequestBody TaskUpdateRequest req
             ) {
-        TaskDetailResponse resp=taskService.updateTask(projectId, userId, taskId, req);
+        TaskDetailResponse resp=taskService.updateTask(projectId, taskId, userId, req);
 
         return ResponseEntity.ok(resp);
     }
 
-    // 테스크 삭제
+    // 태스크 삭제
     @DeleteMapping("/{taskId}")
     public ResponseEntity<Void> deleteTask(
             @PathVariable("projectId") Long projectId,

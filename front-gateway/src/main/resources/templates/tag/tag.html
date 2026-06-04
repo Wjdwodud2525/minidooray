@@ -1,10 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${tag.name}">태그 상세</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-$END$
+<main>
+  <header>
+    <h1 th:text="${tag.name}">태그</h1>
+    <nav><a th:href="@{/projects/{projectId}/tags(projectId=${projectId})}">태그 목록</a> </nav>
+  </header>
+  <section class="panel">
+    <p>ID <span th:text="${tag.tagId}">1</span></p>
+    <form method="post" th:action="@{/projects/{projectId}/tags/{tagId}(projectId=${projectId}, tagId=${tag.tagId})}">
+      <input name="name" type="text" th:value="${tag.name}" required>
+      <button type="submit">수정</button>
+    </form>
+    <form method="post" th:action="@{/projects/{projectId}/tags/{tagId}(projectId=${projectId}, tagId=${tag.tagId})}">
+      <input type="hidden" name="_method" value="delete">
+      <button class="danger" type="submit">삭제</button>
+    </form>
+  </section>
+</main>
 </body>
 </html>

@@ -1,10 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프로젝트 목록</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-$END$
+<main>
+    <header>
+        <h1>프로젝트</h1>
+        <nav><a th:href="@{/users}">사용자 관리</a> · <a th:href="@{/logout}">로그아웃</a> </nav>
+    </header>
+    <form class="panel" method="post" th:action="@{/projects}">
+        <input name="name" type="text" placeholder="새 프로젝트 이름" required>
+        <button type="submit">프로젝트 생성</button>
+    </form>
+
+    <p class="empty" th:if="${#lists.isEmpty(projects)}">등록된 프로젝트가 없습니다.</p>
+    <table th:unless="${#lists.isEmpty(projects)}">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>이름</th>
+            <th>상태</th>
+            <th>관리자</th>
+            <th>작업</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="project : ${projects}">
+            <td th:text="${project.projectId}">1</td>
+            <td><a th:href="@{/projects/{projectId}(projectId=${project.projectId})}" th:text="${project.name}">프로젝트</a> </td>
+            <td th:text="${project.status}">ACTIVE</td>
+            <td th:text="${project.admin} ? '예' : '아니오'">예</td>
+            <td class="actions">
+                <a class="button" th:if="${project.admin}" th:href="@{/projects/{projectId}(projectId=${project.projectId})}">수정</a>
+                <form th:if="${project.admin}" method="post" th:action="@{/projects/{projectId}(projectId=${project.projectId})}">
+                    <input type="hidden" name="_method" value="delete">
+                    <button class="danger" type="submit">삭제</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
 </body>
 </html>

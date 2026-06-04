@@ -1,4 +1,4 @@
-package com.nhnacademy.account.dto.auth;
+package com.nhnacademy.accountapi.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
 

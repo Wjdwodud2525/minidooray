@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProjectMember {
 
-    @Id @Column(name="proejct_member_id")
+    @Id @Column(name="project_member_id")
     @Setter(AccessLevel.NONE)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
@@ -24,6 +25,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex) {
         log.error("ResourceNotFoundException: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    public ResponseEntity<String> handleMissingRequestHeaderException(MissingRequestHeaderException ex) {
+        log.warn("Missing request header: {}", ex.getHeaderName());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
     }
 
     // 500 Internal Server Error - 모든 예외의 최후의 보루

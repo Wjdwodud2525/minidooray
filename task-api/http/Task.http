@@ -1,9 +1,9 @@
-### 테스크 리스트 조회
+### 태스크 리스트 조회
 GET localhost:8082/api/tasks/projects/7/tasks
 Content-Type: application/json
 X-User-Id: test
 
-### 테스크 생성
+### 태스크 생성
 POST localhost:8082/api/tasks/projects/7/tasks
 Content-Type: application/json
 X-User-Id: test
@@ -14,12 +14,12 @@ X-User-Id: test
   "projectId": 2
 }
 
-### 테스크 단건 조회
+### 태스크 단건 조회
 GET localhost:8082/api/tasks/projects/7/tasks/3
 Content-Type: application/json
 X-User-Id: test
 
-### 테스크 수정
+### 태스크 수정
 POST localhost:8082/api/tasks/projects/7/tasks/3
 Content-Type: application/json
 X-User-Id: test
@@ -31,7 +31,7 @@ X-User-Id: test
   "tagIds": [2]
 }
 
-### 테스크 삭제
+### 태스크 삭제
 DELETE localhost:8082/api/tasks/projects/7/tasks/3
 Content-Type: application/json
 X-User-Id: test

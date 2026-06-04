@@ -1,4 +1,4 @@
-package com.nhnacademy.minidooray.user.dto;
+package com.nhnacademy.frontgateway.user.dto;
 
 public record UserResponse(
         String userId,

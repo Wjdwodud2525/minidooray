@@ -1,4 +1,4 @@
-package com.nhnacademy.minidooray.task.dto;
+package com.nhnacademy.frontgateway.task.dto;
 
 import java.util.List;
 

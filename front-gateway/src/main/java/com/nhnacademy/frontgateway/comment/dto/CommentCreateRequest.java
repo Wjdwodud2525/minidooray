@@ -1,4 +1,4 @@
-package com.nhnacademy.minidooray.comment.dto;
+package com.nhnacademy.frontgateway.comment.dto;
 
 public record CommentCreateRequest(
         String content

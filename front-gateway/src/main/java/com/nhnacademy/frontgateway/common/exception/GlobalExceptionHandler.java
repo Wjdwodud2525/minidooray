@@ -1,4 +1,4 @@
-package com.nhnacademy.minidooray.common.exception;
+package com.nhnacademy.frontgateway.common.exception;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -68,6 +68,10 @@ public class GlobalExceptionHandler {
         String message = getResponseMessage(ex);
 
         model.addAttribute("status", status);
+        if (status == HttpStatus.UNAUTHORIZED.value()) {
+            return "redirect:/login?error";
+        }
+
         if (status == HttpStatus.NOT_FOUND.value()) {
             model.addAttribute("title", "페이지를 찾을 수 없습니다");
             model.addAttribute("message", message.isBlank() ? DEFAULT_NOT_FOUND_MESSAGE : message);

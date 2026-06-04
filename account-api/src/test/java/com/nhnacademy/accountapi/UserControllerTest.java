@@ -1,13 +1,14 @@
-package com.nhnacademy.account.controller;
+package com.nhnacademy.accountapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.account.dto.user.UserCreateRequest;
-import com.nhnacademy.account.dto.user.UserResponse;
-import com.nhnacademy.account.dto.user.UserUpdateRequest;
-import com.nhnacademy.account.entity.UserStatus;
-import com.nhnacademy.account.exception.RestGlobalExceptionHandler;
-import com.nhnacademy.account.exception.UserNotFoundException;
-import com.nhnacademy.account.service.UserService;
+import com.nhnacademy.accountapi.controller.UserController;
+import com.nhnacademy.accountapi.dto.user.UserCreateRequest;
+import com.nhnacademy.accountapi.dto.user.UserResponse;
+import com.nhnacademy.accountapi.dto.user.UserUpdateRequest;
+import com.nhnacademy.accountapi.entity.UserStatus;
+import com.nhnacademy.accountapi.exception.RestGlobalExceptionHandler;
+import com.nhnacademy.accountapi.exception.UserNotFoundException;
+import com.nhnacademy.accountapi.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +22,10 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -47,13 +42,13 @@ class UserControllerTest {
 
     @Test
     @DisplayName("전체 유저 조회")
-    void getAllUser() throws Exception {
+    void getUsers() throws Exception {
         List<UserResponse> responses = List.of(
                 new UserResponse("user1", "user1@email.com", UserStatus.ACTIVE),
                 new UserResponse("user2", "user2@email.com", UserStatus.ACTIVE)
         );
 
-        when(userService.getAllUser()).thenReturn(responses);
+        when(userService.getUsers()).thenReturn(responses);
 
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
@@ -62,7 +57,7 @@ class UserControllerTest {
                 .andExpect(jsonPath("$[0].userId").value("user1"))
                 .andExpect(jsonPath("$[1].userId").value("user2"));
 
-        verify(userService).getAllUser();
+        verify(userService).getUsers();
     }
 
     @Test
@@ -70,7 +65,7 @@ class UserControllerTest {
     void getUser() throws Exception {
         UserResponse response = new UserResponse("test", "test@email.com", UserStatus.ACTIVE);
 
-        when(userService.getUser("test")).thenReturn(response);
+        when(userService.getUserById("test")).thenReturn(response);
 
         mockMvc.perform(get("/users/test"))
                 .andExpect(status().isOk())
@@ -78,13 +73,13 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.email").value("test@email.com"))
                 .andExpect(jsonPath("$.status").value("ACTIVE"));
 
-        verify(userService).getUser("test");
+        verify(userService).getUserById("test");
     }
 
     @Test
     @DisplayName("단일 유저 조회 실패 - 없는 유저")
     void getUserFail() throws Exception {
-        when(userService.getUser("missing-user"))
+        when(userService.getUserById("missing-user"))
                 .thenThrow(new UserNotFoundException("유저를 찾을 수 없습니다."));
 
         mockMvc.perform(get("/users/missing-user"))

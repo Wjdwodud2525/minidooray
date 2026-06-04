@@ -1,7 +1,7 @@
-package com.nhnacademy.account.repository;
+package com.nhnacademy.accountapi.repository;
 
-import com.nhnacademy.account.entity.User;
-import com.nhnacademy.account.entity.UserStatus;
+import com.nhnacademy.accountapi.entity.User;
+import com.nhnacademy.accountapi.entity.UserStatus;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,12 +9,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 
-
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @DataJpaTest
 class UserRepositoryTest {
     @Autowired
@@ -70,9 +71,9 @@ class UserRepositoryTest {
 
     @Test
     @DisplayName("유저 아이디 조회 테스트 - 활성화된 유저 기준")
-    void findByUserIdAndStatusTest(){
+    void findByIdAndStatusTest(){
         userRepository.save(user);
-        User result = userRepository.findByUserIdAndStatus("test", UserStatus.ACTIVE).orElse(new User());
+        User result = userRepository.findByIdAndStatus("test", UserStatus.ACTIVE).orElse(new User());
 
         assertAll(
                 () -> assertEquals(user.getUserId(), result.getUserId()),

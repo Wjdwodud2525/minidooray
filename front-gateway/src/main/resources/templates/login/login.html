@@ -1,10 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Dooray Login</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-$END$
+<main>
+    <h1>Mini Dooray 로그인</h1>
+    <p class="error" th:if="${param.error}">아이디 또는 비밀번호를 확인해주세요.</p>
+    <form class="panel" method="post" th:action="@{/login}">
+        <div class="field">
+            <label for="userId">아이디</label>
+            <input id="userId" name="userId" type="text" autocomplete="username" required autofocus>
+        </div>
+        <div class="field">
+            <label for="password">비밀번호</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required>
+        </div>
+        <button type="submit">로그인</button>
+    </form>
+</main>
 </body>
 </html>
