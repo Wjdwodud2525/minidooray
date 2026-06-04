@@ -1,0 +1,8 @@
+### Project list through gateway
+GET localhost:8000/api/tasks/projects
+X-User-Id: test
+
+###
+
+### User list through gateway
+GET localhost:8000/api/accounts/users
