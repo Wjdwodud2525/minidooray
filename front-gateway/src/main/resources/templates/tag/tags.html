@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>태그 목록</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<main>
+    <header>
+        <h1>태그</h1>
+        <nav><a th:href="@{/projects/{projectId}(projectId=${projectId})}">프로젝트 상세</a></nav>
+    </header>
+
+    <form class="panel" method="post" th:action="@{/projects/{projectId}/tags(projectId=${projectId})}">
+        <input name="name" type="text" placeholder="새 태그 이름" required>
+        <button type="submit">태그 생성</button>
+    </form>
+
+    <p class="empty" th:if="${#lists.isEmpty(tags)}">등록된 태그가 없습니다.</p>
+    <table th:unless="${#lists.isEmpty(tags)}">
+        <thead><tr><th>ID</th><th>이름</th><th>작업</th></tr></thead>
+        <tbody>
+        <tr th:each="tag : ${tags}">
+            <td th:text="${tag.tagId}">1</td>
+            <td><a th:href="@{/projects/{projectId}/tags/{tagId}(projectId=${projectId}, tagId=${tag.tagId})}" th:text="${tag.name}">태그</a></td>
+            <td class="actions">
+                <a class="button" th:href="@{/projects/{projectId}/tags/{tagId}(projectId=${projectId}, tagId=${tag.tagId})}">수정</a>
+                <form method="post" th:action="@{/projects/{projectId}/tags/{tagId}(projectId=${projectId}, tagId=${tag.tagId})}">
+                    <input type="hidden" name="_method" value="delete">
+                    <button class="danger" type="submit">삭제</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

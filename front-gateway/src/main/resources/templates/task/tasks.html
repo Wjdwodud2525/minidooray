@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>태스크 목록</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<main>
+    <header>
+        <h1>태스크</h1>
+        <nav><a th:href="@{/projects/{projectId}(projectId=${projectId})}">프로젝트 상세</a></nav>
+    </header>
+
+    <form class="panel" method="post" th:action="@{/projects/{projectId}/tasks(projectId=${projectId})}">
+        <input name="title" type="text" placeholder="제목" required>
+        <textarea name="content" placeholder="내용" required></textarea>
+        <input name="milestoneId" type="number" placeholder="마일스톤 ID">
+        <input name="tagIds" type="text" placeholder="태그 ID 목록 예: 1,2">
+        <button type="submit">태스크 생성</button>
+    </form>
+
+    <p class="empty" th:if="${#lists.isEmpty(tasks)}">등록된 태스크가 없습니다.</p>
+    <table th:unless="${#lists.isEmpty(tasks)}">
+        <thead><tr><th>ID</th><th>제목</th><th>마일스톤</th><th>태그</th><th>댓글</th><th>작업</th></tr></thead>
+        <tbody>
+        <tr th:each="task : ${tasks}">
+            <td th:text="${task.taskId}">1</td>
+            <td><a th:href="@{/projects/{projectId}/tasks/{taskId}(projectId=${projectId}, taskId=${task.taskId})}" th:text="${task.title}">태스크</a></td>
+            <td th:text="${task.milestoneName} ?: '-'">마일스톤</td>
+            <td><span th:each="tag, stat : ${task.tags}" th:text="${tag + (stat.last ? '' : ', ')}">tag</span></td>
+            <td><a th:href="@{/projects/{projectId}/tasks/{taskId}/comments(projectId=${projectId}, taskId=${task.taskId})}" th:text="${task.commentCount}">0</a></td>
+            <td class="actions">
+                <a class="button" th:href="@{/projects/{projectId}/tasks/{taskId}(projectId=${projectId}, taskId=${task.taskId})}">수정</a>
+                <form method="post" th:action="@{/projects/{projectId}/tasks/{taskId}(projectId=${projectId}, taskId=${task.taskId})}">
+                    <input type="hidden" name="_method" value="delete">
+                    <button class="danger" type="submit">삭제</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

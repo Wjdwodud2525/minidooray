@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마일스톤 목록</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<main>
+    <header>
+        <h1>마일스톤</h1>
+        <nav><a th:href="@{/projects/{projectId}(projectId=${projectId})}">프로젝트 상세</a></nav>
+    </header>
+
+    <form class="panel" method="post" th:action="@{/projects/{projectId}/milestones(projectId=${projectId})}">
+        <input name="name" type="text" placeholder="새 마일스톤 이름" required>
+        <button type="submit">마일스톤 생성</button>
+    </form>
+
+    <p class="empty" th:if="${#lists.isEmpty(milestones)}">등록된 마일스톤이 없습니다.</p>
+    <table th:unless="${#lists.isEmpty(milestones)}">
+        <thead><tr><th>ID</th><th>이름</th><th>상태</th><th>작업</th></tr></thead>
+        <tbody>
+        <tr th:each="milestone : ${milestones}">
+            <td th:text="${milestone.milestoneId}">1</td>
+            <td><a th:href="@{/projects/{projectId}/milestones/{milestoneId}(projectId=${projectId}, milestoneId=${milestone.milestoneId})}" th:text="${milestone.name}">마일스톤</a></td>
+            <td th:text="${milestone.status}">OPEN</td>
+            <td class="actions">
+                <a class="button" th:href="@{/projects/{projectId}/milestones/{milestoneId}(projectId=${projectId}, milestoneId=${milestone.milestoneId})}">수정</a>
+                <form method="post" th:action="@{/projects/{projectId}/milestones/{milestoneId}(projectId=${projectId}, milestoneId=${milestone.milestoneId})}">
+                    <input type="hidden" name="_method" value="delete">
+                    <button class="danger" type="submit">삭제</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

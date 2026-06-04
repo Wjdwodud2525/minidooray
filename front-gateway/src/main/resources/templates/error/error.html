@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${status + ' - ' + title}">오류</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<main>
+    <p class="status" th:text="${status}">500</p>
+    <h1 th:text="${title}">서버 오류</h1>
+    <p th:text="${message}">서비스 처리 중 문제가 발생했습니다.</p>
+    <nav>
+        <a th:href="@{/projects}">프로젝트로 이동</a>
+        <a class="secondary" th:href="@{/}">처음으로</a>
+    </nav>
+</main>
+</body>
+</html>

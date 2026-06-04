@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${user.userId}">사용자 상세</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<main>
+    <header>
+        <h1 th:text="${user.userId}">사용자</h1>
+        <nav><a th:href="@{/users}">사용자 목록</a></nav>
+    </header>
+    <section class="panel">
+        <p>이메일: <span th:text="${user.email}">user@example.com</span></p>
+        <p>상태: <span th:text="${user.status}">ACTIVE</span></p>
+        <form id="user-update-form" method="post" th:action="@{/users/{userId}(userId=${user.userId})}">
+            <input name="email" type="email" th:value="${user.email}" required>
+            <input name="password" type="password" placeholder="새 비밀번호" required>
+        </form>
+        <div class="actions">
+            <button type="submit" form="user-update-form">수정</button>
+            <form method="post" th:action="@{/users/{userId}(userId=${user.userId})}">
+                <input type="hidden" name="_method" value="delete">
+                <button class="danger" type="submit">삭제</button>
+            </form>
+        </div>
+    </section>
+</main>
+</body>
+</html>

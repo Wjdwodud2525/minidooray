@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${project.name}">프로젝트 상세</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<main>
+    <header>
+        <div>
+            <h1 th:text="${project.name}">프로젝트</h1>
+            <p>ID <span th:text="${project.projectId}">1</span> · <span th:text="${project.status}">ACTIVE</span></p>
+        </div>
+        <nav>
+            <a class="button-link" th:href="@{/projects}">프로젝트 목록</a>
+            <form th:if="${project.admin}" method="post" th:action="@{/projects/{projectId}(projectId=${project.projectId})}">
+                <input type="hidden" name="_method" value="delete">
+                <button class="danger" type="submit">삭제</button>
+            </form>
+        </nav>
+    </header>
+
+    <section class="panel" th:if="${project.admin}">
+        <h2>수정</h2>
+        <form class="edit-form" method="post" th:action="@{/projects/{projectId}(projectId=${project.projectId})}">
+            <input name="name" type="text" th:value="${project.name}" required>
+            <select name="status" required>
+                <option value="ACTIVE" th:selected="${project.status != null and project.status.name() == 'ACTIVE'}">ACTIVE</option>
+                <option value="DORMANT" th:selected="${project.status != null and project.status.name() == 'DORMANT'}">DORMANT</option>
+                <option value="CLOSED" th:selected="${project.status != null and project.status.name() == 'CLOSED'}">CLOSED</option>
+            </select>
+            <button type="submit">수정</button>
+        </form>
+    </section>
+
+    <section class="panel">
+        <div class="section-title">
+            <h2>멤버</h2>
+            <form class="inline-form" th:if="${project.admin}" method="post" th:action="@{/projects/{projectId}/members(projectId=${project.projectId})}">
+                <input name="userId" type="text" placeholder="사용자 ID" required>
+                <button type="submit">추가</button>
+            </form>
+        </div>
+        <p class="empty" th:if="${#lists.isEmpty(members)}">등록된 멤버가 없습니다.</p>
+        <table th:unless="${#lists.isEmpty(members)}">
+            <thead><tr><th>사용자 ID</th><th>관리자</th><th>작업</th></tr></thead>
+            <tbody>
+            <tr th:each="member : ${members}">
+                <td th:text="${member.userId}">user</td>
+                <td th:text="${member.admin} ? '예' : '아니오'">아니오</td>
+                <td>
+                    <form th:if="${project.admin and !member.admin}" method="post" th:action="@{/projects/{projectId}/members/{userId}(projectId=${project.projectId}, userId=${member.userId})}">
+                        <input type="hidden" name="_method" value="delete">
+                        <button class="danger" type="submit">제거</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="panel">
+        <div class="section-title">
+            <h2>태스크</h2>
+            <a class="button-link" th:href="@{/projects/{projectId}/tasks(projectId=${project.projectId})}">관리</a>
+        </div>
+        <p class="empty" th:if="${#lists.isEmpty(tasks)}">등록된 태스크가 없습니다.</p>
+        <table th:unless="${#lists.isEmpty(tasks)}">
+            <thead><tr><th>ID</th><th>제목</th><th>마일스톤</th><th>태그</th><th>댓글</th></tr></thead>
+            <tbody>
+            <tr th:each="task : ${tasks}">
+                <td th:text="${task.taskId}">1</td>
+                <td><a th:href="@{/projects/{projectId}/tasks/{taskId}(projectId=${project.projectId}, taskId=${task.taskId})}" th:text="${task.title}">태스크</a></td>
+                <td th:text="${task.milestoneName} ?: '-'">마일스톤</td>
+                <td><span th:each="tag, stat : ${task.tags}" th:text="${tag + (stat.last ? '' : ', ')}">tag</span></td>
+                <td th:text="${task.commentCount}">0</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+    <div class="grid">
+        <section class="panel">
+            <div class="section-title">
+                <h2>태그</h2>
+                <a class="button-link" th:href="@{/projects/{projectId}/tags(projectId=${project.projectId})}">관리</a>
+            </div>
+            <p class="empty" th:if="${#lists.isEmpty(tags)}">등록된 태그가 없습니다.</p>
+            <ul th:unless="${#lists.isEmpty(tags)}">
+                <li th:each="tag : ${tags}"><a th:href="@{/projects/{projectId}/tags/{tagId}(projectId=${project.projectId}, tagId=${tag.tagId})}" th:text="${tag.name}">태그</a></li>
+            </ul>
+        </section>
+        <section class="panel">
+            <div class="section-title">
+                <h2>마일스톤</h2>
+                <a class="button-link" th:href="@{/projects/{projectId}/milestones(projectId=${project.projectId})}">관리</a>
+            </div>
+            <p class="empty" th:if="${#lists.isEmpty(milestones)}">등록된 마일스톤이 없습니다.</p>
+            <table th:unless="${#lists.isEmpty(milestones)}">
+                <thead><tr><th>이름</th><th>상태</th></tr></thead>
+                <tbody>
+                <tr th:each="milestone : ${milestones}">
+                    <td><a th:href="@{/projects/{projectId}/milestones/{milestoneId}(projectId=${project.projectId}, milestoneId=${milestone.milestoneId})}" th:text="${milestone.name}">마일스톤</a> </td>
+                    <td th:text="${milestone.status}">ACTIVE</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+</main>
+</body>
+</html>

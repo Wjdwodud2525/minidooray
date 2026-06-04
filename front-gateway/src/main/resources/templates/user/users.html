@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사용자 목록</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<main>
+    <header>
+        <h1>사용자</h1>
+        <nav><a th:href="@{/projects}">프로젝트 목록</a></nav>
+    </header>
+
+    <form class="panel" method="post" th:action="@{/users}">
+        <input name="userId" type="text" placeholder="아이디" required>
+        <input name="email" type="email" placeholder="이메일" required>
+        <input name="password" type="password" placeholder="비밀번호" required>
+        <button type="submit">사용자 생성</button>
+    </form>
+
+    <p class="empty" th:if="${#lists.isEmpty(users)}">등록된 사용자가 없습니다.</p>
+    <table th:unless="${#lists.isEmpty(users)}">
+        <thead><tr><th>아이디</th><th>이메일</th><th>상태</th><th>작업</th></tr></thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td><a th:href="@{/users/{userId}(userId=${user.userId})}" th:text="${user.userId}">user</a></td>
+            <td th:text="${user.email}">user@example.com</td>
+            <td th:text="${user.status}">ACTIVE</td>
+            <td class="actions">
+                <a class="button" th:href="@{/users/{userId}(userId=${user.userId})}">수정</a>
+                <form method="post" th:action="@{/users/{userId}(userId=${user.userId})}">
+                    <input type="hidden" name="_method" value="delete">
+                    <button class="danger" type="submit">삭제</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

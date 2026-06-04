@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>댓글 상세</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<main>
+    <header>
+        <h1>댓글 상세</h1>
+        <nav><a th:href="@{/projects/{projectId}/tasks/{taskId}/comments(projectId=${projectId}, taskId=${taskId})}">댓글 목록</a></nav>
+    </header>
+    <section class="panel">
+        <p class="meta">#<span th:text="${comment.commentId}">1</span> · 작성자 <span th:text="${comment.writerUserId}">user</span></p>
+        <p th:text="${comment.content}">댓글</p>
+        <form method="post" th:action="@{/projects/{projectId}/tasks/{taskId}/comments/{commentId}(projectId=${projectId}, taskId=${taskId}, commentId=${comment.commentId})}">
+            <textarea name="content" th:text="${comment.content}" required></textarea>
+            <button type="submit">수정</button>
+        </form>
+        <form method="post" th:action="@{/projects/{projectId}/tasks/{taskId}/comments/{commentId}(projectId=${projectId}, taskId=${taskId}, commentId=${comment.commentId})}">
+            <input type="hidden" name="_method" value="delete">
+            <button class="danger" type="submit">삭제</button>
+        </form>
+    </section>
+</main>
+</body>
+</html>
